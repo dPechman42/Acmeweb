@@ -7,6 +7,7 @@ import com.acme.statusmgr.beans.ExtensionsDecorator;
 import com.acme.statusmgr.beans.MemoryDecorator;
 import com.acme.statusmgr.beans.OperatingDecorator;
 import com.acme.statusmgr.beans.ServerStatus;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -61,6 +62,12 @@ public class StatusController {
         return serverStatus;
     }
 
+    /**
+     * This method does the decorating of the status
+     * @param serverStatus status to be decorated
+     * @param detail the detail used to decorate the status
+     * @return the newly decorated status or an error for a non-accepted detail
+     */
     public ServerStatus decorate(ServerStatus serverStatus, String detail){
         switch (detail){
             case "extensions":
@@ -70,7 +77,7 @@ public class StatusController {
             case "operations":
                 return new OperatingDecorator(serverStatus);
             default:
-                throw new HandleBadRequest();
+                throw new HandleBadRequest("Invalid details option: " + detail);
         }
     }
 }

@@ -29,7 +29,7 @@ public class ServerManager {
      * @return a string saying what the status is
      */
     static public String getMemoryStatus(){
-        return "Memory is running low";
+        return "memory is running low";
     }
 
     /**
