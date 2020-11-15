@@ -3,7 +3,11 @@ package com.acme.statusmgr;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.acme.statusmgr.beans.ExtensionsDecorator;
+import com.acme.statusmgr.beans.MemoryDecorator;
+import com.acme.statusmgr.beans.OperatingDecorator;
 import com.acme.statusmgr.beans.ServerStatus;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,5 +44,40 @@ public class StatusController {
         System.out.println("*** DEBUG INFO *** " + details);
         return new ServerStatus(counter.incrementAndGet(),
                             String.format(template, name));
+    }
+
+    /**
+     * gets details of the server
+     * @param name the name of the person requesting the data
+     * @param details the details the user wants to know
+     * @return a detailed server status
+     */
+    @RequestMapping("/status/detailed")
+    public ServerStatus getDetailedServerStatus(@RequestParam(value="name", defaultValue="Anonymous") String name,
+            @RequestParam List<String> details) {
+        ServerStatus serverStatus = new ServerStatus(counter.incrementAndGet(), String.format(template, name));
+        for (String detail : details){
+            serverStatus = decorate(serverStatus, detail);
+        }
+        return serverStatus;
+    }
+
+    /**
+     * This method does the decorating of the status
+     * @param serverStatus status to be decorated
+     * @param detail the detail used to decorate the status
+     * @return the newly decorated status or an error for a non-accepted detail
+     */
+    public ServerStatus decorate(ServerStatus serverStatus, String detail){
+        switch (detail){
+            case "extensions":
+                return new ExtensionsDecorator(serverStatus);
+            case "memory":
+                return new MemoryDecorator(serverStatus);
+            case "operations":
+                return new OperatingDecorator(serverStatus);
+            default:
+                throw new HandleBadRequest("Invalid details option: " + detail);
+        }
     }
 }

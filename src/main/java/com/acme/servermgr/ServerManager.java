@@ -20,8 +20,23 @@ public class ServerManager {
      * Find out if this server is operating normally
      * @return Boolean indicating if server is operating normally
      */
-    static public Boolean isOperatingNormally()
-    {
+    static public Boolean isOperatingNormally() {
         return true;
+    }
+
+    /**
+     * Find out the memory status
+     * @return a string saying what the status is
+     */
+    static public String getMemoryStatus(){
+        return "memory is running low";
+    }
+
+    /**
+     * Find out what extensions are in play
+     * @return the extensions in play
+     */
+    static public String getExtensions(){
+        return "[Hypervisor, Kubernetes, RAID-6]";
     }
 }
